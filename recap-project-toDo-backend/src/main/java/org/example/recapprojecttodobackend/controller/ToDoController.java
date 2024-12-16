@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/todoapp")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ToDoController {
 
     private final ToDoService toDoService;
+
+    @GetMapping("/todo")
+    public List<ToDoDTO> getAll() {
+        return toDoService.getAllToDos();
+    }
 
 
 }
