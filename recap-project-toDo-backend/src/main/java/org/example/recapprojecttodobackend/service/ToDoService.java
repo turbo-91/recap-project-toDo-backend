@@ -62,4 +62,12 @@ public class ToDoService {
         }
     }
 
+    public void deleteToDo(String id) {
+        if (toDoRepo.existsById(id)) {
+            toDoRepo.deleteById(id);
+        }else {
+            throw new RuntimeException("Apple not found");
+        }
+    }
+
 }
