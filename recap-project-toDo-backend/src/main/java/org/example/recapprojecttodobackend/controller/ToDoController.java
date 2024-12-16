@@ -1,11 +1,10 @@
 package org.example.recapprojecttodobackend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.recapprojecttodobackend.model.ToDo;
 import org.example.recapprojecttodobackend.model.ToDoDTO;
 import org.example.recapprojecttodobackend.service.ToDoService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,6 +18,16 @@ public class ToDoController {
     @GetMapping("/todo")
     public List<ToDoDTO> getAll() {
         return toDoService.getAllToDos();
+    }
+
+    @PostMapping("/todo")
+    public ToDoDTO createToDo(@RequestBody ToDo toDo) {
+        return toDoService.createToDo(toDo);
+    }
+
+    @GetMapping("/{id}")
+    public ToDoDTO getById(@PathVariable String id) {
+        return toDoService.getById(id);
     }
 
 
