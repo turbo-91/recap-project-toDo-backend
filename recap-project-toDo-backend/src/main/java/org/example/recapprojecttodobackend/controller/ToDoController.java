@@ -20,15 +20,22 @@ public class ToDoController {
         return toDoService.getAllToDos();
     }
 
+    @GetMapping("/{id}")
+    public ToDoDTO getById(@PathVariable String id) {
+        return toDoService.getById(id);
+    }
+
     @PostMapping("/todo")
     public ToDoDTO createToDo(@RequestBody ToDo toDo) {
         return toDoService.createToDo(toDo);
     }
 
-    @GetMapping("/{id}")
-    public ToDoDTO getById(@PathVariable String id) {
-        return toDoService.getById(id);
+    @PutMapping("/{id}")
+    public ToDo updateToDo(@RequestBody ToDo toDo, @PathVariable String id) {
+        return toDoService.updateToDo(toDo, id);
     }
+
+
 
 
 }

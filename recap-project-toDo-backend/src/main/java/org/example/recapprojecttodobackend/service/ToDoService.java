@@ -52,4 +52,14 @@ public class ToDoService {
                 toDoToSave.toDoStatus());
         return toDoDTOToReturn;
     }
+
+    public ToDo updateToDo(ToDo toDo, String id) {
+        if (toDoRepo.existsById(id)) {
+            toDoRepo.save(toDo);
+            return toDoRepo.findById(id).orElseThrow();
+        }else {
+            throw new RuntimeException("ToDo not found");
+        }
+    }
+
 }
