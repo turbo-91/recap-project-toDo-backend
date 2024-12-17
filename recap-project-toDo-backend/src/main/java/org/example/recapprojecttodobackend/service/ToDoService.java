@@ -40,10 +40,13 @@ public class ToDoService {
 
     public ToDoDTO createToDo(ToDo toDo) {
         String generatedId = idService.generateId();
+//         Set toDoStatus by default if it is null
+        ToDo.toDoStatus status = toDo.toDoStatus() != null ? toDo.toDoStatus() : ToDo.toDoStatus.TODO;
+
         ToDo toDoToSave = new ToDo(
-                generatedId,           // Set the generated ID
-                toDo.description(),    // Keep the description
-                toDo.toDoStatus()      // Keep the status
+                generatedId,
+                toDo.description(),
+                status
         );
         ToDo savedToDo = toDoRepo.save(toDoToSave);
         ToDoDTO toDoDTOToReturn = new ToDoDTO(
