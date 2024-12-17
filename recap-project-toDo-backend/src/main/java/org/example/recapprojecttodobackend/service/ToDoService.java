@@ -16,63 +16,39 @@ public class ToDoService {
     private final ToDoRepo toDoRepo;
     private final IdService idService;
 
-    public List<ToDoDTO> getAllToDos() {
-        return toDoRepo.findAll().stream()
-                .map(toDo -> {
-                    ToDoDTO toDoDTO = new ToDoDTO(
-                            toDo.id(),
-                            toDo.description(),
-                            toDo.status()
-                    );
-                    return toDoDTO;
-                })
-                .toList();
+    public List<ToDo> getAllToDos() {
+        return toDoRepo.findAll();
     }
 
-    public ToDoDTO getById(String id) {
-        ToDo toDoToSave = toDoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("ToDo with ID " + id + " not found"));
-        return new ToDoDTO(
-                toDoToSave.id(),
-                toDoToSave.description(),
-                toDoToSave.status()
+    public ToDo getToDoById(String id) {
+        return toDoRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No user found with ID: " + id));
+    }
+
+    public ToDo createToDo(ToDoDTO newToDo) {
+        ToDo todo = new ToDo(
+                idService.generateId(),
+                newToDo.description(),
+                newToDo.status()
         );
+        return toDoRepo.save(todo);
     }
 
-    public ToDoDTO createToDo(ToDo toDo) {
-        String generatedId = idService.generateId();
-//         Set toDoStatus by default if it is null
-        ToDo.toDoStatus status = ToDo.toDoStatus.OPEN;
-
-        ToDo toDoToSave = new ToDo(
-                generatedId,
-                toDo.description(),
-                status
-        );
-        System.out.println("todo" + toDoToSave);
-        ToDo savedToDo = toDoRepo.save(toDoToSave);
-        ToDoDTO toDoDTOToReturn = new ToDoDTO(
-                toDoToSave.id(),
-                toDoToSave.description(),
-                toDoToSave.status());
-        System.out.println("todoDTO" + toDoToSave);
-        return toDoDTOToReturn;
-    }
-
-    public ToDo updateToDo(ToDo toDo, String id) {
-        if (toDoRepo.existsById(id)) {
-            toDoRepo.save(toDo);
-            return toDoRepo.findById(id).orElseThrow();
+    public ToDo updateTodo(ToDo updatedToDo) {
+        if (toDoRepo.existsById(updatedToDo.id())){
+            return toDoRepo.save(updatedToDo);
         }else {
-            throw new RuntimeException("ToDo not found");
+            throw new IllegalArgumentException("No user found with ID: " + updatedToDo.id());
         }
     }
 
-    public void deleteToDo(String id) {
-        if (toDoRepo.existsById(id)) {
+    public ToDo deleteTodo(String id) {
+        if (toDoRepo.existsById(id)){
+            ToDo deletedTodo = toDoRepo.findById(id).orElseThrow();
             toDoRepo.deleteById(id);
+            return deletedTodo;
         }else {
-            throw new RuntimeException("Apple not found");
+            throw new IllegalArgumentException("No user found with ID: " + id);
         }
     }
 
