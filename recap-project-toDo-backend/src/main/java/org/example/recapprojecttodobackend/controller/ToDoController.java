@@ -16,27 +16,27 @@ public class ToDoController {
     private final ToDoService toDoService;
 
     @GetMapping("/todo")
-    public List<ToDoDTO> getAll() {
+    public List<ToDo> getAll() {
         return toDoService.getAllToDos();
     }
 
     @GetMapping("/todo/{id}")
-    public ToDoDTO getById(@PathVariable String id) {
-        return toDoService.getById(id);
+    public ToDo getToDoById(@PathVariable String id) {
+        return toDoService.getToDoById(id);
     }
 
-    @PostMapping("/todo")
-    public ToDoDTO createToDo(@RequestBody ToDo toDo) {
-        return toDoService.createToDo(toDo);
+    @PostMapping
+    public ToDo createTodo(@RequestBody ToDoDTO newToDo ){
+        return toDoService.createToDo(newToDo);
     }
 
     @PutMapping("/todo/{id}")
-    public ToDo updateToDo(@RequestBody ToDo toDo, @PathVariable String id) {
-        return toDoService.updateToDo(toDo, id);
+    public ToDo updateToDo(@RequestBody ToDo updatedTodo) {
+        return toDoService.updateTodo(updatedTodo);
     }
 
-    @DeleteMapping("/todo/{id}")
-    public void deleteFigure(@PathVariable String id) {
-        toDoService.deleteToDo(id);
+    @DeleteMapping("/{id}")
+    public ToDo deleteTodo(@PathVariable String id){
+        return toDoService.deleteTodo(id);
     }
 }

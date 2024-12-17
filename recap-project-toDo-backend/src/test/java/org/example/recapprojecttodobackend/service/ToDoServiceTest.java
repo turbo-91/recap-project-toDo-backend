@@ -24,106 +24,125 @@ class ToDoServiceTest {
     @Test
     void getAllToDos_ShouldReturnEmptyList_whenCalledInitially() {
         //GIVEN
-        ToDoService toDoService = new ToDoService(toDoRepo, idService); // empty by default
+        ToDoService toDoService = new ToDoService(toDoRepo, idService); // Service instance
+        when(toDoRepo.findAll()).thenReturn(Collections.emptyList()); // Mock empty repository
 
-        List<ToDoDTO> expected = Collections.emptyList();
+        List<ToDo> expected = Collections.emptyList();
+
         //WHEN
-        List<ToDoDTO> actual = toDoService.getAllToDos();
+        List<ToDo> actual = toDoService.getAllToDos();
+
         //THEN
-        assertEquals(expected, actual);
+        assertEquals(expected, actual); // Verify the returned list is empty
+        verify(toDoRepo).findAll(); // Verify findAll was called once
     }
 
     @Test
-    void getAllToDos_ShouldReturnListOfToDoDTOs_whenCalled() {
+    void getAllToDos_ShouldReturnListOfToDos_whenCalled() {
         //GIVEN
         ToDo toDo1 = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
         ToDo toDo2 = new ToDo("2", "Sign up for bootcamp", ToDo.toDoStatus.DONE);
-        ToDoDTO toDoDTO1 = new ToDoDTO("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
-        ToDoDTO toDoDTO2 = new ToDoDTO("2", "Sign up for bootcamp", ToDo.toDoStatus.DONE);
+
         ToDoService toDoService = new ToDoService(toDoRepo, idService);
         List<ToDo> toDoList = List.of(toDo1, toDo2);
-        when(toDoRepo.findAll()).thenReturn(toDoList);
-        List<ToDoDTO> expected = List.of(toDoDTO1, toDoDTO2);
+
+        when(toDoRepo.findAll()).thenReturn(toDoList); // Mock the repository to return the list
+
+        List<ToDo> expected = toDoList;
+
         //WHEN
-        List<ToDoDTO> actual = toDoService.getAllToDos();
+        List<ToDo> actual = toDoService.getAllToDos();
+
         //THEN
-        assertEquals(expected, actual);
+        assertEquals(expected, actual); // Verify the list matches
+        verify(toDoRepo).findAll(); // Verify findAll was called once
     }
 
-    // GetById Tests
     @Test
-    void getById_shouldReturnToDoDTO1_whenCalledWithValidId() {
+    void getToDoById_ShouldReturnToDo_whenCalledWithValidId() {
         //GIVEN
-        ToDo toDo1= new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
+        ToDo toDo1 = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
         ToDoService toDoService = new ToDoService(toDoRepo, idService);
-        when(toDoRepo.findById(toDo1.id())).thenReturn(Optional.of(toDo1)); // mocking that the figure is being found from the repo
 
-        ToDoDTO expected = new ToDoDTO("1", toDo1.description(), toDo1.status());
+        when(toDoRepo.findById("1")).thenReturn(Optional.of(toDo1)); // Mock repository returning the ToDo
+
+        ToDo expected = toDo1;
+
         //WHEN
-        ToDoDTO actual = toDoService.getById(toDo1.id());
+        ToDo actual = toDoService.getToDoById("1");
+
         //THEN
-        assertEquals(expected, actual);
+        assertEquals(expected, actual); // Verify the fetched ToDo matches the expected
+        verify(toDoRepo).findById("1"); // Verify findById was called once
     }
 
     // createToDo test
 
     @Test
-    void createFigure_shouldReturnCreatedFigure_whenCalledWithValidData() {
+    void createToDo_shouldReturnCreatedToDo_whenCalledWithValidData() {
         //GIVEN
         ToDoService toDoService = new ToDoService(toDoRepo, idService);
-        ToDo toDo1= new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
-        when(idService.generateId()).thenReturn("1"); // mocking that the idService returns our id
-        when(toDoRepo.save(toDo1)).thenReturn(toDo1); // mocking that the figureRepo saves succesfully and then returns toDo
+        ToDoDTO newToDo = new ToDoDTO("Finish bootcamp", ToDo.toDoStatus.OPEN);
+        ToDo savedToDo = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
+        when(idService.generateId()).thenReturn("1"); // idService generates ID "1"
+        when(toDoRepo.save(any(ToDo.class))).thenReturn(savedToDo);
 
-        ToDoDTO expected = new ToDoDTO("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
+        ToDo expected = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
 
         //WHEN
-        ToDoDTO actual = toDoService.createToDo(toDo1);
+        ToDo actual = toDoService.createToDo(newToDo);
 
         //THEN
-        assertEquals(expected, actual);
-        verify(toDoRepo).save(toDo1); // additionally verifying that save has not only been mocked (above) but also called once
+        assertEquals(expected, actual); // Verify the returned object matches expectations
+        verify(toDoRepo).save(any(ToDo.class)); // Verify save was called once
     }
 
     // updateToDo Tests
 
     @Test
-    void updateFigure_shouldReturnUpdatedAsterix_whenCalledWithValidData() {
-        // GIVEN
-        ToDo toDo1= new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
-        ToDoService toDoService = new ToDoService(toDoRepo, idService); // siehe oben
-        when(toDoRepo.existsById(toDo1.id())).thenReturn(true); // mocking the fulfilled if-condition
-        when(toDoRepo.findById(toDo1.id())).thenReturn(Optional.of(toDo1)); // mocking that statement of condition returns optional of figure
+    void updateToDo_shouldReturnUpdatedToDo_whenCalledWithValidData() {
+        //GIVEN
+        ToDoService toDoService = new ToDoService(toDoRepo, idService);
 
-        ToDo expected = new ToDo(
-                toDo1.id(),
-                toDo1.description(),
-                toDo1.status());
+        // Existing ToDo to update
+        ToDo existingToDo = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
+        ToDo updatedToDo = new ToDo("1", "Complete project", ToDo.toDoStatus.IN_PROGRESS);
 
-        // WHEN
-        ToDo actual = toDoService.updateToDo(toDo1, toDo1.id());
+        // Mock the repository behavior
+        when(toDoRepo.existsById("1")).thenReturn(true);
+        when(toDoRepo.save(updatedToDo)).thenReturn(updatedToDo);
+
+        //WHEN
+        ToDo actual = toDoService.updateTodo(updatedToDo);
 
         //THEN
-        assertEquals(expected, actual);
-        verify(toDoRepo).save(toDo1); // verifying if figureRepo.save(figure) is called once in updateFigure
-        // which is sufficient as we do not need to check if figureRepo.save works
-        // -> that's a test for the figureRepo tests
+        assertEquals(updatedToDo, actual); // Ensure the returned ToDo matches the updated one
+        verify(toDoRepo).existsById("1"); // Verify ID existence check
+        verify(toDoRepo).save(updatedToDo); // Verify save was called with the updated ToDo
     }
 
     // deleteToDo tests
 
     @Test
-    void testDeleteFigure_GivenValidId_WhenExists_ThenDeletesSuccessfully() {
-        // GIVEN
-        ToDo toDo1= new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
-        when(toDoRepo.existsById(toDo1.id())).thenReturn(true);
+    void deleteToDo_shouldReturnDeletedToDo_whenCalledWithValidId() {
+        //GIVEN
         ToDoService toDoService = new ToDoService(toDoRepo, idService);
 
-        // WHEN
-        toDoService.deleteToDo(toDo1.id());
+        // Existing ToDo to delete
+        ToDo existingToDo = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.OPEN);
 
-        // THEN
-        verify(toDoRepo).deleteById(toDo1.id()); // verify deleteById was called once
+        // Mock the repository behavior
+        when(toDoRepo.existsById("1")).thenReturn(true);
+        when(toDoRepo.findById("1")).thenReturn(Optional.of(existingToDo));
+
+        //WHEN
+        ToDo actual = toDoService.deleteTodo("1");
+
+        //THEN
+        assertEquals(existingToDo, actual); // Ensure the returned ToDo matches the deleted one
+        verify(toDoRepo).existsById("1"); // Verify ID existence check
+        verify(toDoRepo).findById("1"); // Verify findById was called
+        verify(toDoRepo).deleteById("1"); // Verify deleteById was called
     }
 
 
