@@ -1,9 +1,9 @@
 package org.example.recapprojecttodobackend.model;
 
-public record ToDo(String id, String description, toDoStatus toDoStatus) {
+public record ToDo(String id, String description, toDoStatus status) {
 
     public enum toDoStatus {
-        TODO, DOING, DONE
+        OPEN, IN_PROGRESS, DONE
     }
 
 }

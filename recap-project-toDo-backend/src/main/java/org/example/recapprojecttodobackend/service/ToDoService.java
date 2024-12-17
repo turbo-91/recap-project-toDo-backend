@@ -20,9 +20,9 @@ public class ToDoService {
         return toDoRepo.findAll().stream()
                 .map(toDo -> {
                     ToDoDTO toDoDTO = new ToDoDTO(
-                            null,
+                            toDo.id(),
                             toDo.description(),
-                            toDo.toDoStatus()
+                            toDo.status()
                     );
                     return toDoDTO;
                 })
@@ -31,25 +31,31 @@ public class ToDoService {
 
     public ToDoDTO getById(String id) {
         ToDo toDoToSave = toDoRepo.findById(id).orElseThrow();
+        System.out.println("toDoToSave in getById" + toDoToSave);
         ToDoDTO toDoDTO = new ToDoDTO(
-                null,
+                toDoToSave.id(),
                 toDoToSave.description(),
-                toDoToSave.toDoStatus());
+                toDoToSave.status());
         return toDoDTO;
     }
 
     public ToDoDTO createToDo(ToDo toDo) {
         String generatedId = idService.generateId();
+//         Set toDoStatus by default if it is null
+        ToDo.toDoStatus status = ToDo.toDoStatus.OPEN;
+
         ToDo toDoToSave = new ToDo(
-                generatedId,           // Set the generated ID
-                toDo.description(),    // Keep the description
-                toDo.toDoStatus()      // Keep the status
+                generatedId,
+                toDo.description(),
+                status
         );
+        System.out.println("todo" + toDoToSave);
         ToDo savedToDo = toDoRepo.save(toDoToSave);
         ToDoDTO toDoDTOToReturn = new ToDoDTO(
-                generatedId,
+                toDoToSave.id(),
                 toDoToSave.description(),
-                toDoToSave.toDoStatus());
+                toDoToSave.status());
+        System.out.println("todoDTO" + toDoToSave);
         return toDoDTOToReturn;
     }
 

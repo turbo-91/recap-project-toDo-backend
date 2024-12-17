@@ -20,7 +20,7 @@ public class ToDoController {
         return toDoService.getAllToDos();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/todo/{id}")
     public ToDoDTO getById(@PathVariable String id) {
         return toDoService.getById(id);
     }
@@ -30,12 +30,12 @@ public class ToDoController {
         return toDoService.createToDo(toDo);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/todo/{id}")
     public ToDo updateToDo(@RequestBody ToDo toDo, @PathVariable String id) {
         return toDoService.updateToDo(toDo, id);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/todo/{id}")
     public void deleteFigure(@PathVariable String id) {
         toDoService.deleteToDo(id);
     }
