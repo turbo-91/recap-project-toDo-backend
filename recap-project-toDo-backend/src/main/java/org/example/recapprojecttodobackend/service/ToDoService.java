@@ -30,13 +30,13 @@ public class ToDoService {
     }
 
     public ToDoDTO getById(String id) {
-        ToDo toDoToSave = toDoRepo.findById(id).orElseThrow();
-        System.out.println("toDoToSave in getById" + toDoToSave);
-        ToDoDTO toDoDTO = new ToDoDTO(
+        ToDo toDoToSave = toDoRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ToDo with ID " + id + " not found"));
+        return new ToDoDTO(
                 toDoToSave.id(),
                 toDoToSave.description(),
-                toDoToSave.status());
-        return toDoDTO;
+                toDoToSave.status()
+        );
     }
 
     public ToDoDTO createToDo(ToDo toDo) {
