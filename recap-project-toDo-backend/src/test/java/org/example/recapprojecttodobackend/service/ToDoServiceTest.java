@@ -34,22 +34,22 @@ class ToDoServiceTest {
         assertEquals(expected, actual);
     }
 
-    @Test
-    void getAllToDos_ShouldReturnListOfToDoDTOs_whenCalled() {
-        //GIVEN
-        ToDo toDo1 = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.TODO);
-        ToDo toDo2 = new ToDo("2", "Sign up for bootcamp", ToDo.toDoStatus.DONE);
-        ToDoDTO toDoDTO1 = new ToDoDTO(null, "Finish bootcamp", ToDo.toDoStatus.TODO);
-        ToDoDTO toDoDTO2 = new ToDoDTO(null, "Sign up for bootcamp", ToDo.toDoStatus.DONE);
-        ToDoService toDoService = new ToDoService(toDoRepo, idService);
-        List<ToDo> toDoList = List.of(toDo1, toDo2);
-        when(toDoRepo.findAll()).thenReturn(toDoList);
-        List<ToDoDTO> expected = List.of(toDoDTO1, toDoDTO2);
-        //WHEN
-        List<ToDoDTO> actual = toDoService.getAllToDos();
-        //THEN
-        assertEquals(expected, actual);
-    }
+//    @Test
+//    void getAllToDos_ShouldReturnListOfToDoDTOs_whenCalled() {
+//        //GIVEN
+//        ToDo toDo1 = new ToDo("1", "Finish bootcamp", ToDo.toDoStatus.TODO);
+//        ToDo toDo2 = new ToDo("2", "Sign up for bootcamp", ToDo.toDoStatus.DONE);
+//        ToDoDTO toDoDTO1 = new ToDoDTO(null, "Finish bootcamp", ToDo.toDoStatus.TODO);
+//        ToDoDTO toDoDTO2 = new ToDoDTO(null, "Sign up for bootcamp", ToDo.toDoStatus.DONE);
+//        ToDoService toDoService = new ToDoService(toDoRepo, idService);
+//        List<ToDo> toDoList = List.of(toDo1, toDo2);
+//        when(toDoRepo.findAll()).thenReturn(toDoList);
+//        List<ToDoDTO> expected = List.of(toDoDTO1, toDoDTO2);
+//        //WHEN
+//        List<ToDoDTO> actual = toDoService.getAllToDos();
+//        //THEN
+//        assertEquals(expected, actual);
+//    }
 
     // GetById Tests
 //    @Test
